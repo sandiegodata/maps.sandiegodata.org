@@ -6,42 +6,8 @@
         <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
         <meta name="mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-capable" content="yes">
-        <link rel="stylesheet" href="./resources/ol.css">
-        <link rel="stylesheet" href="resources/fontawesome-all.min.css">
-        <link rel="stylesheet" href="./resources/ol3-layerswitcher.css">
-        <link rel="stylesheet" href="./resources/qgis2web.css">
-<style>
-.search-layer {
-  top: 65px;
-  left: .5em;
-}
-.ol-touch .search-layer {
-  top: 80px;
-}
-</style>
-        <style>
-        html, body {
-            background-color: #ffffff;
-        }
-        .ol-control button {
-            background-color: #f8f8f8 !important;
-            color: #000000 !important;
-            border-radius: 0px !important;
-        }
-        .ol-zoom, .geolocate, .gcd-gl-control .ol-control {
-            background-color: rgba(255,255,255,.4) !important;
-            padding: 3px !important;
-        }
-        .ol-scale-line {
-            background: none !important;
-        }
-        .ol-scale-line-inner {
-            border: 2px solid #f8f8f8 !important;
-            border-top: none !important;
-            background: rgba(255, 255, 255, 0.5) !important;
-            color: black !important;
-        }
-        </style>
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
         <style>
         html, body, #map {
             width: 100%;
@@ -54,20 +20,256 @@
     </head>
     <body>
         <div id="map">
-            <div id="popup" class="ol-popup">
-                <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-                <div id="popup-content"></div>
-            </div>
         </div>
-        <script src="resources/qgis2web_expressions.js"></script>
-        <script src="resources/polyfills.js"></script>
-        <script src="./resources/functions.js"></script>
-        <script src="./resources/ol.js"></script>
-        <script src="./resources/ol3-layerswitcher.js"></script>
-        <script src="layers/parking_zones_1.js"></script><script src="layers/Nodes_2.js"></script>
-        <script src="styles/parking_zones_1_style.js"></script><script src="styles/Nodes_2_style.js"></script>
-        <script src="./layers/layers.js" type="text/javascript"></script> 
-        <script src="./resources/qgis2web.js"></script>
-        <script src="./resources/Autolinker.min.js"></script>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="data/parking_zones_1.js"></script>
+        <script src="data/Nodes_2.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[32.5482415739937,-117.50214036917029],[33.045256512834776,-116.71748128486699]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a>');
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        var layer_StamenToner_0 = L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
+            opacity: 1.0
+        });
+        layer_StamenToner_0.addTo(map);
+        map.addLayer(layer_StamenToner_0);
+        function pop_parking_zones_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['field_1'] !== null ? Autolinker.link(String(feature.properties['field_1'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['locationuid'] !== null ? Autolinker.link(String(feature.properties['locationuid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['locationtype'] !== null ? Autolinker.link(String(feature.properties['locationtype'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['parentlocationuid'] !== null ? Autolinker.link(String(feature.properties['parentlocationuid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['community_name'] !== null ? Autolinker.link(String(feature.properties['community_name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['tract_geoid'] !== null ? Autolinker.link(String(feature.properties['tract_geoid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['roadsegid'] !== null ? Autolinker.link(String(feature.properties['roadsegid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['speed'] !== null ? Autolinker.link(String(feature.properties['speed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['oneway'] !== null ? Autolinker.link(String(feature.properties['oneway'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['abloaddr'] !== null ? Autolinker.link(String(feature.properties['abloaddr'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['abhiaddr'] !== null ? Autolinker.link(String(feature.properties['abhiaddr'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['rd30full'] !== null ? Autolinker.link(String(feature.properties['rd30full'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_parking_zones_1_0() {
+            return {
+                pane: 'pane_parking_zones_1',
+                opacity: 1,
+                color: 'rgba(53,190,81,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 3.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(53,190,81,1.0)',
+            }
+        }
+        map.createPane('pane_parking_zones_1');
+        map.getPane('pane_parking_zones_1').style.zIndex = 401;
+        map.getPane('pane_parking_zones_1').style['mix-blend-mode'] = 'normal';
+        var layer_parking_zones_1 = new L.geoJson(json_parking_zones_1, {
+            attribution: '',
+            pane: 'pane_parking_zones_1',
+            onEachFeature: pop_parking_zones_1,
+            style: style_parking_zones_1_0,
+        });
+        bounds_group.addLayer(layer_parking_zones_1);
+        map.addLayer(layer_parking_zones_1);
+        function pop_Nodes_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['assetuid'] !== null ? Autolinker.link(String(feature.properties['assetuid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['assettype'] !== null ? Autolinker.link(String(feature.properties['assettype'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['parentassetuid'] !== null ? Autolinker.link(String(feature.properties['parentassetuid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['mediatype'] !== null ? Autolinker.link(String(feature.properties['mediatype'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['events'] !== null ? Autolinker.link(String(feature.properties['events'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['community_name'] !== null ? Autolinker.link(String(feature.properties['community_name'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['tract_geoid'] !== null ? Autolinker.link(String(feature.properties['tract_geoid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['roadsegid'] !== null ? Autolinker.link(String(feature.properties['roadsegid'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['speed'] !== null ? Autolinker.link(String(feature.properties['speed'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['oneway'] !== null ? Autolinker.link(String(feature.properties['oneway'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['abloaddr'] !== null ? Autolinker.link(String(feature.properties['abloaddr'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['abhiaddr'] !== null ? Autolinker.link(String(feature.properties['abhiaddr'])) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['rd30full'] !== null ? Autolinker.link(String(feature.properties['rd30full'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Nodes_2_0(feature) {
+            switch(String(feature.properties['assettype'])) {
+                case 'CAMERA':
+                    return {
+                pane: 'pane_Nodes_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(121,158,226,1.0)',
+            }
+                    break;
+                case 'EM_SENSOR':
+                    return {
+                pane: 'pane_Nodes_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(157,230,120,1.0)',
+            }
+                    break;
+                case 'ENV_SENSOR':
+                    return {
+                pane: 'pane_Nodes_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(236,199,123,1.0)',
+            }
+                    break;
+                case 'MIC':
+                    return {
+                pane: 'pane_Nodes_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(235,61,119,1.0)',
+            }
+                    break;
+                case 'NODE':
+                    return {
+                pane: 'pane_Nodes_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(157,27,226,1.0)',
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Nodes_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(86,234,185,1.0)',
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Nodes_2');
+        map.getPane('pane_Nodes_2').style.zIndex = 402;
+        map.getPane('pane_Nodes_2').style['mix-blend-mode'] = 'normal';
+        var layer_Nodes_2 = new L.geoJson(json_Nodes_2, {
+            attribution: '',
+            pane: 'pane_Nodes_2',
+            onEachFeature: pop_Nodes_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Nodes_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Nodes_2);
+        map.addLayer(layer_Nodes_2);
+        setBounds();
+        </script>
     </body>
 </html>
