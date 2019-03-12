@@ -6,4 +6,4 @@ A [map of publicly owned land in the City of San Diego,](http://maps.sandiegodat
 
 ## Water Quality Measurement Stations
 
-Locations of [water quality measurement stations on the coast and in bays]((http://maps.sandiegodata.org/WaterQualityStations)), based on two datasets from CEDEN. The creeek measurements originate with San Diego Coask Keeper. 
+Locations of [water quality measurement stations on the coast and in bays](https://water.sandiegodata.org/maps/stations), based on two datasets from CEDEN. The creeek measurements originate with San Diego Coask Keeper. 
